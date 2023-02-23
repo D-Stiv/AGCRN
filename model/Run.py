@@ -21,12 +21,12 @@ from lib.TrainInits import print_model_parameters
 #*************************************************************************#
 Mode = 'Train'
 DEBUG = 'True'
-DATASET = 'PEMSD4'      #PEMSD4 or PEMSD8
+DATASET = 'METR-LA'      #PEMSD4 or PEMSD8
 DEVICE = 'cuda:0'
 MODEL = 'AGCRN'
 
 #get configuration
-config_file = './{}_{}.conf'.format(DATASET, MODEL)
+config_file = 'configuration/{}_.conf'.format(DATASET)
 #print('Read configuration file: %s' % (config_file))
 config = configparser.ConfigParser()
 config.read(config_file)
