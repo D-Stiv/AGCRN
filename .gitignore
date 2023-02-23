@@ -10,6 +10,7 @@
 *.pkl
 *.h5
 *.ods
+*.conf
 
 # python noteboook for local tests
 *.ipynb
@@ -141,7 +142,7 @@ celerybeat.pid
 # Environments
 .env
 .venv
-env/
+*env/
 venv/
 ENV/
 env.bak/
