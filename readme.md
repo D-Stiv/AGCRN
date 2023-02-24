@@ -45,6 +45,11 @@ mkdir -p data/METR-LA, data/PEMS-BAY
 Each npz file contains one key, named "data", the shape is (sequence_length, num_of_vertices, num_of_features).
 
 # create the configuration file for each dataset (example of METR-LA)
+[default]
+    DEVICE = cpu
+    MODE = train
+    DEBUG = False
+
 [data]
     num_nodes = 207
     lag = 12
@@ -52,7 +57,7 @@ Each npz file contains one key, named "data", the shape is (sequence_length, num
     val_ratio = 0.2
     test_ratio = 0.2
     tod = False
-    normalizer = "std"
+    normalizer = std
     column_wise = False
     default_graph = True
 
@@ -65,7 +70,7 @@ Each npz file contains one key, named "data", the shape is (sequence_length, num
     cheb_order = 2
 
 [train]
-    loss_func = "mask_mae"
+    loss_func = mask_mae
     seed = 10
     batch_size = 64
     epochs = 100
@@ -92,10 +97,15 @@ Each npz file contains one key, named "data", the shape is (sequence_length, num
 ### Train Commands
 
 ```
-python3 model/Run.py
+# train, validate and then test
+python3 model/Run.py --mode train [--device cpu]
+
+# only test (using a pre-trained model)
+python3 model/Run.py --mode test [--device cpu]
+
 ```
 
-To replicate the results in PEMSD4 and PEMSD8 datasets, you can run the the codes in the "model" folder directly. If you want to use the model for your own datasets, please load your dataset by revising "load_dataset" in the "lib" folder and remember tuning the learning rate (gradient norm can be used to facilitate the training).
+To replicate the results in METR-LA, PEMSD4 and PEMSD8 datasets, you can run the the codes in the "AGCRN" folder directly. If you want to use the model for your own datasets, please load your dataset by revising "load_dataset" in the "lib" folder and remember tuning the learning rate (gradient norm can be used to facilitate the training).
 
 Please cite our work if you find useful.
 
