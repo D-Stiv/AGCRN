@@ -71,8 +71,8 @@ def split_data_by_ratio(data, val_ratio, test_ratio):
     train_data = data[:-int(data_len*(test_ratio+val_ratio))]
     return train_data, val_data, test_data
 
-def data_loader(X, Y, batch_size, shuffle=True, drop_last=True):
-    cuda = True if torch.cuda.is_available() else False
+def data_loader(X, Y, batch_size, shuffle=True, drop_last=True, device='cuda'):
+    cuda = True if torch.cuda.is_available() and 'cuda' in device else False
     TensorFloat = torch.cuda.FloatTensor if cuda else torch.FloatTensor
     X, Y = TensorFloat(X), TensorFloat(Y)
     data = torch.utils.data.TensorDataset(X, Y)
@@ -99,12 +99,12 @@ def get_dataloader(args, normalizer = 'std', tod=False, dow=False, weather=False
     print('Val: ', x_val.shape, y_val.shape)
     print('Test: ', x_test.shape, y_test.shape)
     ##############get dataloader######################
-    train_dataloader = data_loader(x_tra, y_tra, args.batch_size, shuffle=True, drop_last=True)
+    train_dataloader = data_loader(x_tra, y_tra, args.batch_size, shuffle=True, drop_last=True, device=args.device)
     if len(x_val) == 0:
         val_dataloader = None
     else:
-        val_dataloader = data_loader(x_val, y_val, args.batch_size, shuffle=False, drop_last=True)
-    test_dataloader = data_loader(x_test, y_test, args.batch_size, shuffle=False, drop_last=False)
+        val_dataloader = data_loader(x_val, y_val, args.batch_size, shuffle=False, drop_last=True, device=args.device)
+    test_dataloader = data_loader(x_test, y_test, args.batch_size, shuffle=False, drop_last=False, device=args.device)
     return train_dataloader, val_dataloader, test_dataloader, scaler
 
 
