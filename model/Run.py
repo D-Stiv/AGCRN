@@ -20,7 +20,7 @@ from lib.TrainInits import print_model_parameters
 
 #*************************************************************************#
 #Mode = 'train'
-DEBUG = 'True'
+#DEBUG = 'True'
 DATASET = 'METR-LA'      #PEMSD4 or PEMSD8
 #DEVICE = 'cuda:0'
 MODEL = 'AGCRN'
@@ -46,7 +46,7 @@ args = argparse.ArgumentParser(description='arguments')
 args.add_argument('--dataset', default=DATASET, type=str)
 args.add_argument('--mode', default=config['default']['MODE'], type=str)
 args.add_argument('--device', default=config['default']['DEVICE'], type=str, help='indices of GPUs')
-args.add_argument('--debug', default=DEBUG, type=eval)
+args.add_argument('--debug', default=config['default']['DEBUG'], type=eval)
 args.add_argument('--model', default=MODEL, type=str)
 args.add_argument('--cuda', default=True, type=bool)
 #data
@@ -86,7 +86,7 @@ args.add_argument('--real_value', default=config['train']['real_value'], type=ev
 args.add_argument('--mae_thresh', default=config['test']['mae_thresh'], type=eval)
 args.add_argument('--mape_thresh', default=config['test']['mape_thresh'], type=float)
 #log
-args.add_argument('--log_dir', default='./', type=str)
+args.add_argument('--log_dir', default='./', type=str) # will be overwritten
 args.add_argument('--log_step', default=config['log']['log_step'], type=int)
 args.add_argument('--plot', default=config['log']['plot'], type=eval)
 args = args.parse_args()
@@ -140,9 +140,11 @@ if args.lr_decay:
     #lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer, T_max=64)
 
 #config log path
-current_time = datetime.now().strftime('%Y%m%d%H%M%S')
+#current_time = datetime.now().strftime('%Y%m%d%H%M%S')
+parameters = '_lag{}-hor{}-loss{}-ep{}-lr_init{}-lr_rate{}-seed{}_'.format(args.lag, args.horizon, args.loss_func, args.epochs, 
+                                                                           args.lr_init, args.lr_decay_rate, args.seed)
 current_dir = os.path.dirname(os.path.realpath(__file__))
-log_dir = os.path.join(current_dir,'experiments', args.dataset, current_time)
+log_dir = os.path.join(current_dir,'experiments', args.dataset, parameters)
 args.log_dir = log_dir
 
 #start training
@@ -151,7 +153,7 @@ trainer = Trainer(model, loss, optimizer, train_loader, val_loader, test_loader,
 if args.mode == 'train':
     trainer.train()
 elif args.mode == 'test':
-    model.load_state_dict(torch.load('../pre-trained/{}.pth'.format(args.dataset)))
+    model.load_state_dict(torch.load('{}/best_model.pth'.format(args.log_dir)))
     print("Load saved model")
     trainer.test(model, trainer.args, test_loader, scaler, trainer.logger)
 else:
