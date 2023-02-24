@@ -98,10 +98,16 @@ Each npz file contains one key, named "data", the shape is (sequence_length, num
 
 ```
 # train, validate and then test
-python3 model/Run.py --mode train [--device cpu]
+** using cpu as device **
+python3 model/Run.py --mode train --device cpu
+** using cuda as device **
+python3 model/Run.py --mode train --device cuda
 
 # only test (using a pre-trained model)
-python3 model/Run.py --mode test [--device cpu]
+** using cpu as device **
+python3 model/Run.py --mode test --device cpu
+** using cuda as device **
+python3 model/Run.py --mode test --device cuda
 
 ```
 
