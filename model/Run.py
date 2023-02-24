@@ -19,10 +19,10 @@ from lib.TrainInits import print_model_parameters
 
 
 #*************************************************************************#
-Mode = 'Train'
+#Mode = 'train'
 DEBUG = 'True'
 DATASET = 'METR-LA'      #PEMSD4 or PEMSD8
-DEVICE = 'cuda:0'
+#DEVICE = 'cuda:0'
 MODEL = 'AGCRN'
 
 #get configuration
@@ -44,8 +44,8 @@ def masked_mae_loss(scaler, mask_value):
 #parser
 args = argparse.ArgumentParser(description='arguments')
 args.add_argument('--dataset', default=DATASET, type=str)
-args.add_argument('--mode', default=Mode, type=str)
-args.add_argument('--device', default=DEVICE, type=str, help='indices of GPUs')
+args.add_argument('--mode', default=config['default']['MODE'], type=str)
+args.add_argument('--device', default=config['default']['DEVICE'], type=str, help='indices of GPUs')
 args.add_argument('--debug', default=DEBUG, type=eval)
 args.add_argument('--model', default=MODEL, type=str)
 args.add_argument('--cuda', default=True, type=bool)
@@ -91,8 +91,13 @@ args.add_argument('--log_step', default=config['log']['log_step'], type=int)
 args.add_argument('--plot', default=config['log']['plot'], type=eval)
 args = args.parse_args()
 init_seed(args.seed)
-if torch.cuda.is_available():
-    torch.cuda.set_device(int(args.device[5]))
+if torch.cuda.is_available() and 'cuda' in args.device:
+    try:
+        # cuda version is specified
+        torch.cuda.set_device(int(args.device[5]))
+    except:
+        # cuda version is not specified
+        pass
 else:
     args.device = 'cpu'
 
